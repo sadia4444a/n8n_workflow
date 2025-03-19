@@ -16,14 +16,23 @@ All of this is triggered via Telegram, making it super easy to interact with! Ju
 https://github.com/user-attachments/assets/21f7b522-4678-4dd0-af4a-6450660241ec
 
 🚀 AI-Powered Contact Finder with n8n & Google Sheets! 🤖
+
 An AI research agent in n8n that automates finding and storing contact information from Google Maps and websites! 🔍📊
+
 ✨ How it Works:
+
 ✅ Searches for business details via "Map Searcher" 🌍
+
 ✅ Extracts Address, Phone, Website, Ratings, Opening Hours & Emails 📌
+
 ✅ Automatically stores results in Google Sheets in structured JSON format 📄
+
 
 
 📽️ Check out the demo video to see it in action! 🎥👇
 
 https://github.com/user-attachments/assets/a966f9c1-fdd1-4d0d-9f3f-c4aabfcff25f
+
+# NOTE:
+You can download the workflow JSON file here. Just import it into n8n, set up your credentials, and you're good to go! Let me know if you need any help. 🚀"
 
