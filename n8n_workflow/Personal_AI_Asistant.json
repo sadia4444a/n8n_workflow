@@ -1,0 +1,282 @@
+{
+  "name": "My workflow 6",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        1460,
+        740
+      ],
+      "id": "10a2e749-3f5d-40c8-80d7-d23498f4a62a",
+      "name": "Telegram Trigger",
+      "webhookId": "347c7ad3-e59e-4842-83f6-1bb92f28c504"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "=You are a helpful assistant.\n\nwhen user will query about email . Use \"Gmail\" Tool to get email and make a summary.\n\nwhen user want to create calendar event use \" Google Calendar \" Tool to create Event.\n\nwhen user say send email to some person first search \"Google Sheets\" tool to get email address of that person and then go to \"Gmail1\" tool to send email.\n\nIf user wants normal conversation then give them answer\n\ntoday date is {{ $now }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1920,
+        740
+      ],
+      "id": "b755b73b-66a5-4184-8b25-c4e4ed7a9fe5",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "ministral-8b-latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        1640,
+        1180
+      ],
+      "id": "f055cd84-6bef-4023-a1ac-2b5294ca6355",
+      "name": "Mistral Cloud Chat Model"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2660,
+        740
+      ],
+      "id": "721f9ade-aade-4e70-9fe6-e288c3472b69",
+      "name": "Telegram",
+      "webhookId": "8d7260f6-2677-43b2-a5e8-3235920af63f"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.from.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1780,
+        1200
+      ],
+      "id": "f2bea54d-7180-421c-b4ed-73730edc0fa4",
+      "name": "Window Buffer Memory"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "=Get unread emails from my inbox when user wants to know the summary of their unread email. Consume the Gmail API.",
+        "operation": "getAll",
+        "limit": 5,
+        "filters": {
+          "readStatus": "unread"
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        2080,
+        1120
+      ],
+      "id": "c93019e8-844d-4a09-9700-78d46dbf43fb",
+      "name": "Gmail",
+      "webhookId": "7c284afd-ebe1-41d9-a50d-90b1168c0ea7"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Consume Google Calendar API And Use This Tool to Create Calendar Event",
+        "calendar": {
+          "__rl": true,
+          "value": "your-email@gmail.com",
+          "mode": "list",
+          "cachedResultName": "your-email@gmail.com"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "additionalFields": {
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', ``, 'string') }}",
+          "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Summary', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        1960,
+        1120
+      ],
+      "id": "8ca93c29-5195-4b49-9a23-eec97418f1c4",
+      "name": "Google Calendar"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Search this tool to get a name and corresponding email address for sending mail. Read, update, and write data to Google Sheets",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Google Sheet"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "YOUR_SHEET_NAME",
+          "mode": "list",
+          "cachedResultName": "Sheet Name"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.5,
+      "position": [
+        2220,
+        1120
+      ],
+      "id": "b08edcf5-f9e7-4862-9e9d-27c8d737e285",
+      "name": "Google Sheets"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "send the Gmail to a specific person. Consume the Gmail API",
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ $fromAI(\"subject\", \"subject of the mail\") }}",
+        "emailType": "text",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        2360,
+        1120
+      ],
+      "id": "a8ad38ca-e31c-4dd5-89a1-2fec3fbcb3fd",
+      "name": "Gmail1",
+      "webhookId": "de51b929-1ac9-4317-a820-aa6c7972155c"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fb6d1282-a021-4a44-9446-efe84772b2ec",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "aa542a9e7967d9ad1ed3b0eae8e66924d3e5696b1b552292b9c29c85593caedc"
+  },
+  "id": "RquPwFZV4J2SD95w",
+  "tags": []
+}
