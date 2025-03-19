@@ -3,7 +3,7 @@
 
 Exploring n8n: AI-Powered Workflow Automation 🤖
 
-I recently created a simple smart automation workflow in n8n that integrates with Telegram, Gmail, Google Calendar, and Google Sheets to streamline daily tasks. Here's how it works:
+ A simple smart automation workflow in n8n that integrates with Telegram, Gmail, Google Calendar, and Google Sheets to streamline daily tasks. Here's how it works:
 
 ✅ Fetch & Summarize Emails 
 ✅ Schedule Calendar Events 
@@ -17,7 +17,7 @@ https://github.com/user-attachments/assets/21f7b522-4678-4dd0-af4a-6450660241ec
 
 🚀 AI-Powered Contact Finder with n8n & Google Sheets! 🤖
 
-An AI research agent in n8n that automates finding and storing contact information from Google Maps and websites! 🔍📊
+An AI research agent in n8n that automates finding and storing contact information from Google Maps. 🔍📊
 
 ✨ How it Works:
 
